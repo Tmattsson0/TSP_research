@@ -24,7 +24,7 @@ def show_plot(locs: np.ndarray):
     plt.show()
 
 
-ncity = 32
+ncity = 4
 locations, distances = gen_random_tsp(ncity)
 
 show_plot(locations)
@@ -42,6 +42,12 @@ cost = sum_poly(
         ),
     ),
 )
+
+for stuff in q:
+    print("this is stuff " + str(stuff))
+
+print(cost)
+
 
 # Constraints on rows
 row_constraints = [
@@ -61,7 +67,7 @@ model = cost + constraints
 # Set Ising Machine Client Settings
 client = FixstarsClient()
 client.token = "IcrKdmn7sqNjqZqjCIbRlzrFlhnrEQoW"
-client.parameters.timeout = 5000  # Timeout is 1 second
+client.parameters.timeout = 5000  # Timeout is 5 seconds
 
 solver = Solver(client)
 
@@ -72,6 +78,8 @@ if len(result) == 0:
 energy, values = result[0].energy, result[0].values
 
 q_values = decode_solution(q, values, 1)
+
+print(q_values)
 
 route = np.where(np.array(q_values) == 1)[1]
 print(route)
