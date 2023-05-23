@@ -68,34 +68,34 @@ for i in range(ncity):  # Should be sumpoly(ncity, ?)
                 costs.append(f)
 
             if (0 <= j <= ncity - 3) and (j_prime == -1):
-                f = BinaryPoly(distances[j][0] * (q[i][j] - q[i][j + 1]) * (1 - q[(i + 1) % ncity][0]))
+                f = BinaryPoly(distances[j + 1][0] * (q[i][j] - q[i][j + 1]) * (1 - q[(i + 1) % ncity][0]))
                 costs.append(f)
 
             if (j == ncity - 2) and (j_prime == -1):
-                f = BinaryPoly(distances[ncity - 2][0] * q[i][ncity - 2] * (1 - q[(i + 1) % ncity][0]))
+                f = BinaryPoly(distances[ncity - 1][0] * q[i][ncity - 2] * (1 - q[(i + 1) % ncity][0]))
                 costs.append(f)
 
             if (j == -1) and (0 <= j_prime <= ncity - 3):
-                f = BinaryPoly(distances[0][j_prime] * (1 - q[i][0]) * (
+                f = BinaryPoly(distances[0][j_prime + 1] * (1 - q[i][0]) * (
                         q[(i + 1) % ncity][j_prime] - q[(i + 1) % ncity][j_prime + 1]))
                 costs.append(f)
 
             if (0 <= j <= ncity - 3) and (0 <= j_prime <= ncity - 3):
-                f = BinaryPoly(distances[j][j_prime] * (q[i][j] - q[i][j + 1]) * (
+                f = BinaryPoly(distances[j + 1][j_prime + 1] * (q[i][j] - q[i][j + 1]) * (
                         q[(i + 1) % ncity][j_prime] - q[(i + 1) % ncity][j_prime + 1]))
                 costs.append(f)
 
             if (j == ncity - 2) and (0 <= j_prime <= ncity - 3):
-                f = BinaryPoly(distances[ncity - 2][j_prime] * q[i][ncity - 2] * (
+                f = BinaryPoly(distances[ncity - 1][j_prime + 1] * q[i][ncity - 2] * (
                         q[(i + 1) % ncity][j_prime] - q[(i + 1) % ncity][j_prime + 1]))
                 costs.append(f)
 
             if (j == -1) and (j_prime == ncity - 2):
-                f = BinaryPoly(distances[0][ncity - 2] * (1 - q[i][0]) * q[(i + 1) % ncity][ncity - 2])
+                f = BinaryPoly(distances[0][ncity - 1] * (1 - q[i][0]) * q[(i + 1) % ncity][ncity - 2])
                 costs.append(f)
 
             if (0 <= j <= ncity - 3) and (j_prime == ncity - 2):
-                f = BinaryPoly(distances[j][ncity - 2] * (q[i][j] - q[i][j + 1]) * q[(i + 1) % ncity][ncity - 2])
+                f = BinaryPoly(distances[j + 1][ncity - 1] * (q[i][j] - q[i][j + 1]) * q[(i + 1) % ncity][ncity - 2])
                 costs.append(f)
 
 print(distances)
