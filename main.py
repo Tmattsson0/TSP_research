@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from amplify import BinaryPoly, gen_symbols, Solver, decode_solution, sum_poly
+from amplify import BinaryPoly, gen_symbols, Solver, decode_solution, sum_poly, BinaryIntPoly
 from amplify.constraint import equal_to, greater_equal
 from amplify.client import FixstarsClient
+
+np.random.seed(12)
 
 
 def gen_random_tsp(ncity: int):
@@ -24,7 +26,7 @@ def show_plot(locs: np.ndarray):
     plt.show()
 
 
-ncity = 4
+ncity = 3
 locations, distances = gen_random_tsp(ncity)
 
 show_plot(locations)
@@ -33,15 +35,16 @@ q = gen_symbols(BinaryPoly, ncity, ncity - 1)  # Example for 32 cities. Binary c
 
 # q_4city = gen_symbols(BinaryPoly, 4, 4) # Example for four cities. Binary change to unary
 
-cost = sum_poly(
-    ncity,
-    lambda n: sum_poly(
-        ncity,
-        lambda i: sum_poly(
-            ncity, lambda j: distances[i][j] * q[n][i] * q[(n + 1) % ncity][j]
-        ),
-    ),
-)
+# cost = sum_poly(
+#     ncity,
+#     lambda n: sum_poly(
+#         ncity,
+#         lambda i: sum_poly(
+#             ncity, lambda j: distances[i][j] * q[n][i] * q[(n + 1) % ncity][j]
+#         ),
+#     ),
+#
+# )
 
 # cost_unary = sum_poly(
 #     ncity,
@@ -55,54 +58,55 @@ cost = sum_poly(
 
 costs = []
 
-for i in range(ncity): # Should be sumpoly(ncity, ?)
+for i in range(ncity):  # Should be sumpoly(ncity, ?)
     for j in range(-1, ncity - 1):
         for j_prime in range(-1, ncity - 1):
 
-            if (j is -1 and j_prime is -1) or (j is ncity - 2 and j_prime is ncity - 2):
-                #Should be if (j == j_prime)
-                f = 0
+            # if (j == -1 and j_prime == -1) or (j == ncity - 2 and j_prime == ncity - 2):
+            if j == j_prime:
+                f = BinaryPoly(0)
                 costs.append(f)
 
             if (0 <= j <= ncity - 3) and (j_prime == -1):
-                f = distances[j][0] * (q[i][j] - q[i][j + 1]) * (1 - q[i + 1][0])
+                f = BinaryPoly(distances[j][0] * (q[i][j] - q[i][j + 1]) * (1 - q[(i + 1) % ncity][0]))
                 costs.append(f)
 
             if (j == ncity - 2) and (j_prime == -1):
-                f = distances[ncity - 2][0] * q[i][ncity - 2] * (1 - q[i + 1][0])
+                f = BinaryPoly(distances[ncity - 2][0] * q[i][ncity - 2] * (1 - q[(i + 1) % ncity][0]))
                 costs.append(f)
 
             if (j == -1) and (0 <= j_prime <= ncity - 3):
-                f = distances[0][j_prime] * (1 - q[i][0]) * (q[i+1][j_prime] - q[i + 1][j_prime + 1])
+                f = BinaryPoly(distances[0][j_prime] * (1 - q[i][0]) * (
+                        q[(i + 1) % ncity][j_prime] - q[(i + 1) % ncity][j_prime + 1]))
                 costs.append(f)
 
             if (0 <= j <= ncity - 3) and (0 <= j_prime <= ncity - 3):
-                f = distances[j][j_prime] * (q[i][j] - q[i][j + 1]) * (q[i + 1][j_prime] - q[i + 1][j_prime + 1])
+                f = BinaryPoly(distances[j][j_prime] * (q[i][j] - q[i][j + 1]) * (
+                        q[(i + 1) % ncity][j_prime] - q[(i + 1) % ncity][j_prime + 1]))
                 costs.append(f)
 
             if (j == ncity - 2) and (0 <= j_prime <= ncity - 3):
-                f = distances[ncity - 2][j_prime] * q[i][ncity - 2] * (q[i + 1][j_prime] - q[i + 1][j_prime + 1])
+                f = BinaryPoly(distances[ncity - 2][j_prime] * q[i][ncity - 2] * (
+                        q[(i + 1) % ncity][j_prime] - q[(i + 1) % ncity][j_prime + 1]))
                 costs.append(f)
 
             if (j == -1) and (j_prime == ncity - 2):
-                f = distances[0][ncity - 2] * (1 - q[i][0]) * q[i + 1][ncity - 2]
+                f = BinaryPoly(distances[0][ncity - 2] * (1 - q[i][0]) * q[(i + 1) % ncity][ncity - 2])
                 costs.append(f)
 
             if (0 <= j <= ncity - 3) and (j_prime == ncity - 2):
-                f = distances[j][ncity - 2] * (q[i][j] - q[i][j + 1]) * q[i + 1][ncity - 2]
+                f = BinaryPoly(distances[j][ncity - 2] * (q[i][j] - q[i][j + 1]) * q[(i + 1) % ncity][ncity - 2])
                 costs.append(f)
 
+print(distances)
 
-c = sum_poly(costs[i] for i in range(len(costs)))
+print(costs)
 
-print(c)
+print(len(costs))
 
-
-for stuff in q:
-    print("this is stuff " + str(stuff))
+cost = sum_poly(costs)
 
 print(cost)
-
 
 # Constraints on rows
 row_constraints = [
@@ -113,12 +117,11 @@ row_constraints = [
 #     greater_equal(q[i][j],q[i][j+1]) for i in range(ncity), for j in range(ncity-1)
 # ]
 
+
 # Constraints on columns
 col_constraints = [
     equal_to(sum_poly([q[n][i] for n in range(ncity)]), 1) for i in range(ncity)
 ]
-
-
 
 constraints = sum(row_constraints) + sum(col_constraints)
 
