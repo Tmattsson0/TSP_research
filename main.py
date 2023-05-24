@@ -35,7 +35,7 @@ q = gen_symbols(BinaryPoly, ncity, ncity - 1)  # Example for 32 cities. Binary c
 
 # q_4city = gen_symbols(BinaryPoly, 4, 4) # Example for four cities. Binary change to unary
 
-# cost = sum_poly(
+# cost.py = sum_poly(
 #     ncity,
 #     lambda n: sum_poly(
 #         ncity,
