@@ -1,4 +1,7 @@
 import numpy as np
+from amplify import sum_poly, gen_symbols, BinaryPoly
+
+import cost
 
 
 def gen_random_tsp(ncity: int):
@@ -59,3 +62,28 @@ def route_to_binary_dict(route: list):
         q_dict[key_j] = q_values[j]
 
     return q_dict
+
+
+def qdict_to_qvalues(qdict: dict, q):
+
+    temp = 0
+    for i in range(len(q)):
+        for j in range(len(q[0])):
+            key_j = 'q_{}'.format(temp)  # a string depending on j
+            q[i][j] = qdict.get(key_j)
+            temp = temp + 1
+
+    return q
+
+
+# test = "- 0.466811 q_0 q_2 + 0.465021 q_0 q_3 - 0.466811 q_0 q_4 + 0.465021 q_0 q_5 + 0.465021 q_1 q_2 - 0.916739 q_1 q_3 + 0.465021 q_1 q_4 - 0.916739 q_1 q_5 - 0.466811 q_2 q_4 + 0.465021 q_2 q_5 + 0.465021 q_3 q_4 - 0.916739 q_3 q_5 + 0.466811 q_0 - 0.0133025 q_1 + 0.466811 q_2 - 0.0133025 q_3 + 0.466811 q_4 - 0.0133025 q_5"
+#
+# _, dist = gen_test_tsp(3)
+# q = gen_symbols(BinaryPoly, 3, 3 - 1)  # Example for 32 cities. Binary change to unary
+#
+# test2 = cost.cost_func_unary(dist, q, 3)
+#
+#
+# qdict = route_to_unary_dict([1, 2, 3])
+#
+# qdict_to_qvalues(test2, qdict)

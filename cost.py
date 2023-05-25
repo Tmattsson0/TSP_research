@@ -43,8 +43,8 @@ def cost_func_unary(distances, q, ncity):
                     f = BinaryPoly(
                         distances[j + 1][ncity - 1] * (q[i][j] - q[i][j + 1]) * q[(i + 1) % ncity][ncity - 2])
                     costs.append(f)
-
-    return sum_poly(costs)
+    cost = sum_poly(costs)
+    return cost
 
 
 def cost_func_binary(distances, q, ncity):

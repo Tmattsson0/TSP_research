@@ -30,8 +30,14 @@ def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    unary_cost = cost.cost_func_unary(distances, unary_q, ncity)
-    binary_cost = cost.cost_func_binary(distances, binary_q, ncity)
+
+    #unary
+    encoded_q = util.qdict_to_qvalues(util.route_to_unary_dict(route), unary_q)
+    unary_cost = cost.cost_func_unary(distances, encoded_q, ncity)
+
+    #binary
+    encoded_q = util.qdict_to_qvalues(util.route_to_binary_dict(route), binary_q)
+    binary_cost = cost.cost_func_binary(distances, encoded_q, ncity)
 
 
 @then("the two cost functions equal the same number")
@@ -39,4 +45,5 @@ def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: Then the two cost.py functions equal the same number')
+    assert unary_cost == binary_cost
+
