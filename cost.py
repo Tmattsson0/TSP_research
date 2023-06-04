@@ -1,4 +1,5 @@
 from amplify import sum_poly, BinaryPoly
+from amplify.amplify.constraint import equal_to, greater_equal
 
 
 def cost_func_unary(distances, q, ncity):
@@ -59,3 +60,31 @@ def cost_func_binary(distances, q, ncity):
     )
 
     return cost
+
+
+def col_constraint_binary(q, ncity):
+    return [equal_to(sum_poly([q[n][i] for n in range(ncity)]), 1) for i in range(ncity)]
+
+
+def col_constraint_unary(q, ncity):
+    col_constraints_unary = [
+        equal_to(sum_poly([q[i][j] - q[i][j + 1] for i in range(ncity)]), 1) for j in range(ncity - 2)
+    ]
+
+    edge_cost = equal_to(sum_poly([q[i][ncity - 2] for i in range(ncity)]), 1)
+
+    col_constraints_unary.append(edge_cost)
+
+    return col_constraints_unary
+
+
+def row_constraint_unary(q, ncity):
+    row_constraints = [
+        greater_equal(sum_poly([q[i][j] - q[i][j + 1] for i in range(ncity - 1)]), 0) for j in range(ncity - 2)
+    ]
+
+    return row_constraints
+
+# row_constraints = [
+#     equal_to(sum_poly([q[n][i] for i in range(ncity)]), 1) for n in range(ncity)
+# ]

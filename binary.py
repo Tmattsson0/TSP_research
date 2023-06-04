@@ -25,7 +25,7 @@ def show_plot(locs: np.ndarray):
     plt.show()
 
 
-ncity = 3
+ncity = 4
 locations, distances = gen_random_tsp(ncity)
 
 show_plot(locations)
