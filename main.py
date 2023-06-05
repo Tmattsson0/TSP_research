@@ -27,7 +27,7 @@ def show_plot(locs: np.ndarray):
     plt.show()
 
 
-ncity = 12
+ncity = 4
 locations, distances = gen_random_tsp(ncity)
 
 show_plot(locations)
@@ -60,12 +60,9 @@ energy, values = result[0].energy, result[0].values
 
 q_values = decode_solution(q, values, 1)
 
-print(q_values)
-
-route = np.where(np.array(q_values) == 1)[1]
+route = np.count_nonzero(q_values > 0, axis=1) #Count number of 1's in each row.
 
 print(route)
-
 
 def show_route(route: list, distances: np.ndarray, locations: np.ndarray):
     ncity = len(route)
