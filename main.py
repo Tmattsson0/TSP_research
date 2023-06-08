@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import cost as c
 import matplotlib.pyplot as plt
@@ -5,7 +7,7 @@ from amplify import BinaryPoly, gen_symbols, Solver, decode_solution, sum_poly, 
 from amplify.constraint import equal_to, greater_equal
 from amplify.client import FixstarsClient
 
-np.random.seed(12)
+np.random.seed(2)
 
 
 def gen_random_tsp(ncity: int):
@@ -27,12 +29,14 @@ def show_plot(locs: np.ndarray):
     plt.show()
 
 
-ncity = 4
+ncity = 16
+
+
 locations, distances = gen_random_tsp(ncity)
 
 show_plot(locations)
 
-q = gen_symbols(BinaryPoly, ncity, ncity - 1)  # Example for 32 cities. Binary change to unary
+q = gen_symbols(BinaryPoly, ncity, ncity - 1)
 
 cost = c.cost_func_unary(distances, q, ncity)
 
@@ -45,24 +49,35 @@ constraints = sum(row_constraints) + sum(col_constraints)
 constraints *= np.amax(distances)  # Set the strength of the constraint
 model = cost + constraints
 
+
 # Set Ising Machine Client Settings
 client = FixstarsClient()
 client.token = "IcrKdmn7sqNjqZqjCIbRlzrFlhnrEQoW"
-client.parameters.timeout = 5000  # Timeout is 5 seconds
+client.parameters.timeout = 7000  # Timeout is 5 seconds
 
 solver = Solver(client)
 
+start = time.time()
+
 result = solver.solve(model)
+
 if len(result) == 0:
     raise RuntimeError("Any one of constraints is not satisfied.")
+
+end = time.time()
+print("Number of cities: " + str(ncity))
+print("Time: " + str(end - start))
 
 energy, values = result[0].energy, result[0].values
 
 q_values = decode_solution(q, values, 1)
 
-route = np.count_nonzero(q_values > 0, axis=1) #Count number of 1's in each row.
+print(q_values)
 
-print(route)
+route = np.count_nonzero(q_values > 0, axis=1)  # Count number of 1's in each row.
+
+print("Route: " + str(route))
+
 
 def show_route(route: list, distances: np.ndarray, locations: np.ndarray):
     ncity = len(route)
@@ -88,3 +103,8 @@ def show_route(route: list, distances: np.ndarray, locations: np.ndarray):
 
 
 show_route(route, distances, locations)
+
+print("Path length: " + str(sum(
+        [distances[route[i]][route[(i + 1) % ncity]] for i in range(ncity)]
+    )
+))

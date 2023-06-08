@@ -54,7 +54,7 @@ def route_to_binary_dict(route: list):
 
     for i in range(len(route)):
         temp = [0] * len(route)
-        temp[i] = 1
+        temp[route[i] - 1] = 1
         q_values.extend(temp)
 
     for j in range(len(route) * (len(route))):

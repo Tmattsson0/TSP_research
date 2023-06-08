@@ -1,10 +1,12 @@
+import time
+
 import numpy as np
 import matplotlib.pyplot as plt
 from amplify import BinaryPoly, gen_symbols, Solver, decode_solution, sum_poly
 from amplify.constraint import equal_to
 from amplify.client import FixstarsClient
 
-np.random.seed(12)
+np.random.seed(1)
 
 def gen_random_tsp(ncity: int):
     # Coordinate
@@ -25,14 +27,12 @@ def show_plot(locs: np.ndarray):
     plt.show()
 
 
-ncity = 4
+ncity = 32
 locations, distances = gen_random_tsp(ncity)
 
 show_plot(locations)
 
-q = gen_symbols(BinaryPoly, ncity, ncity)  # Example for 32 cities. Binary change to unary
-
-# q_4city = gen_symbols(BinaryPoly, 4, 4) # Example for four cities. Binary change to unary
+q = gen_symbols(BinaryPoly, ncity, ncity)
 
 cost = sum_poly(
     ncity,
@@ -44,7 +44,7 @@ cost = sum_poly(
     ),
 )
 
-print(cost)
+# print(cost)
 # Constraints on rows
 row_constraints = [
     equal_to(sum_poly([q[n][i] for i in range(ncity)]), 1) for n in range(ncity)
@@ -63,21 +63,30 @@ model = cost + constraints
 # Set Ising Machine Client Settings
 client = FixstarsClient()
 client.token = "IcrKdmn7sqNjqZqjCIbRlzrFlhnrEQoW"
-client.parameters.timeout = 5000  # Timeout is 1 second
+client.parameters.timeout = 7000
 
 solver = Solver(client)
 
+start = time.time()
+
 result = solver.solve(model)
+
 if len(result) == 0:
     raise RuntimeError("Any one of constraints is not satisfied.")
+
+end = time.time()
+print("Number of cities: " + str(ncity))
+print("Time: " + str(end - start))
 
 energy, values = result[0].energy, result[0].values
 
 q_values = decode_solution(q, values, 1)
 
 route = np.where(np.array(q_values) == 1)[1]
-print(route)
 
+print(q_values)
+
+print("Route: " + str(route))
 
 def show_route(route: list, distances: np.ndarray, locations: np.ndarray):
     ncity = len(route)
@@ -103,3 +112,8 @@ def show_route(route: list, distances: np.ndarray, locations: np.ndarray):
 
 
 show_route(route, distances, locations)
+
+print("Path length: " + str(sum(
+        [distances[route[i]][route[(i + 1) % ncity]] for i in range(ncity)]
+    )
+))

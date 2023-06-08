@@ -16,3 +16,8 @@ Feature: Unary conversion
     Given a valid route encoded in unary and binary and a distance array
     When their column constraints are calculated with explicit variables
     Then the two column constraints should equal the same number
+
+  Scenario: Unary cost function should equal the binary equivalent for all permutations of valid route
+    Given a list of different cities and a tsp
+    When the cost function is calculated for all route-permutations in unary and binary
+    Then all cost binary cost functions are equal to their unary counterpart
