@@ -27,7 +27,7 @@ def show_plot(locs: np.ndarray):
     plt.show()
 
 
-ncity = 32
+ncity = 4
 locations, distances = gen_random_tsp(ncity)
 
 show_plot(locations)
@@ -63,20 +63,18 @@ model = cost + constraints
 # Set Ising Machine Client Settings
 client = FixstarsClient()
 client.token = "IcrKdmn7sqNjqZqjCIbRlzrFlhnrEQoW"
-client.parameters.timeout = 7000
+client.parameters.timeout = 2000
 
 solver = Solver(client)
-
-start = time.time()
 
 result = solver.solve(model)
 
 if len(result) == 0:
     raise RuntimeError("Any one of constraints is not satisfied.")
 
-end = time.time()
+print("Mode: Binary")
 print("Number of cities: " + str(ncity))
-print("Time: " + str(end - start))
+print("Time limit: " + str(client.parameters.timeout))
 
 energy, values = result[0].energy, result[0].values
 

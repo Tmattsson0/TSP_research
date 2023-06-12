@@ -7,7 +7,7 @@ from amplify import BinaryPoly, gen_symbols, Solver, decode_solution, sum_poly, 
 from amplify.constraint import equal_to, greater_equal
 from amplify.client import FixstarsClient
 
-np.random.seed(2)
+np.random.seed(1)
 
 
 def gen_random_tsp(ncity: int):
@@ -29,7 +29,7 @@ def show_plot(locs: np.ndarray):
     plt.show()
 
 
-ncity = 16
+ncity = 4
 
 
 locations, distances = gen_random_tsp(ncity)
@@ -38,13 +38,14 @@ show_plot(locations)
 
 q = gen_symbols(BinaryPoly, ncity, ncity - 1)
 
-cost = c.cost_func_unary(distances, q, ncity)
+cost = c.cost_func_unary_v2(distances, q, ncity)
 
-row_constraints = c.row_constraint_unary(q, ncity)
+# row_constraints = c.row_constraint_unary(q, ncity)
 
 col_constraints = c.col_constraint_unary(q, ncity)
 
-constraints = sum(row_constraints) + sum(col_constraints)
+# constraints = sum(row_constraints) + sum(col_constraints)
+constraints = sum(col_constraints)
 
 constraints *= np.amax(distances)  # Set the strength of the constraint
 model = cost + constraints
@@ -53,20 +54,19 @@ model = cost + constraints
 # Set Ising Machine Client Settings
 client = FixstarsClient()
 client.token = "IcrKdmn7sqNjqZqjCIbRlzrFlhnrEQoW"
-client.parameters.timeout = 7000  # Timeout is 5 seconds
+client.parameters.timeout = 2000  # Timeout is 5 seconds
 
 solver = Solver(client)
 
-start = time.time()
 
 result = solver.solve(model)
 
 if len(result) == 0:
     raise RuntimeError("Any one of constraints is not satisfied.")
 
-end = time.time()
+print("Mode: Unary")
 print("Number of cities: " + str(ncity))
-print("Time: " + str(end - start))
+print("Time limit: " + str(client.parameters.timeout))
 
 energy, values = result[0].energy, result[0].values
 
