@@ -97,7 +97,7 @@ def cost_func_unary_v2(distances, q, ncity):
     # Row constraint as an additional cost. If a row is not allowed, it gets +100 cost.
     for i in range(ncity):
         for j in range(ncity - 2):
-            fn = BinaryPoly(-100 * (q[i][j] - 1) * q[i][j + 1])
+            fn = BinaryPoly(-10 * (q[i][j] - 1) * q[i][j + 1]) #todo: Decrease to 10
             new_costs.append(fn)
     also_cost = sum_poly(new_costs)
 
@@ -141,28 +141,4 @@ def row_constraint_unary(q, ncity):  # Works but slow
         for j in range(ncity - 2):
             row_constraints.append(greater_equal(q[i][j] - q[i][j + 1], 0))
 
-    # print(row_constraints)
     return row_constraints
-
-# def row_constraint_unary(q, ncity):
-#     row_constraints = [
-#         greater_equal(sum_poly([q[i][j] - q[i][j + 1] for j in range(ncity - 2)]), 0) for i in range(ncity)
-#     ]
-#
-#     return row_constraints
-
-
-# def row_constraint_unary(q, ncity):
-#     constraint = []
-#     row_temp = []
-#     for i in range(ncity):
-#         for j in range(ncity - 2):
-#             row_temp.append(BinaryPoly(q[i][j] - q[i][j + 1]))
-#         print(row_temp)
-#         constraint.append(greater_equal(sum_poly(row_temp), 0))
-#         row_temp.clear()
-#     return constraint
-
-# row_constraints = [
-#     equal_to(sum_poly([q[n][i] for i in range(ncity)]), 1) for n in range(ncity)
-# ]

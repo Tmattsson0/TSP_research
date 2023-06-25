@@ -1,9 +1,10 @@
 import time
 
 import numpy as np
+import cost as c
 import matplotlib.pyplot as plt
-from amplify import BinaryPoly, gen_symbols, Solver, decode_solution, sum_poly
-from amplify.constraint import equal_to
+from amplify import BinaryPoly, gen_symbols, Solver, decode_solution, sum_poly, BinaryIntPoly
+from amplify.constraint import equal_to, greater_equal
 from amplify.client import FixstarsClient
 
 
@@ -29,8 +30,8 @@ def show_plot(locations: np.ndarray):
 def show_route(route: list, distances: np.ndarray, locations: np.ndarray):
     ncity = len(route)
     path_length = round(sum(
-        [distances[route[i]][route[(i + 1) % ncity]] for i in range(ncity)]
-    ), 4)
+        [distances[route[i]][route[(i + 1) % ncity]] for i in range(ncity)]), 4
+    )
 
     # x = [i[0] for i in locations]
     # y = [i[1] for i in locations]
@@ -49,7 +50,7 @@ def show_route(route: list, distances: np.ndarray, locations: np.ndarray):
     return path_length
 
 
-def run_binary(seed, ncity, time_limit):
+def run_unary(seed, ncity, time_limit):
     try:
         np.random.seed(seed)
 
@@ -57,38 +58,25 @@ def run_binary(seed, ncity, time_limit):
 
         # show_plot(locations)
 
-        q = gen_symbols(BinaryPoly, ncity, ncity)
+        q = gen_symbols(BinaryPoly, ncity, ncity - 1)
 
-        cost = sum_poly(
-            ncity,
-            lambda n: sum_poly(
-                ncity,
-                lambda i: sum_poly(
-                    ncity, lambda j: distances[i][j] * q[n][i] * q[(n + 1) % ncity][j]
-                ),
-            ),
-        )
+        cost = c.cost_func_unary_v2(distances, q, ncity)
 
-        # print(cost)
-        # Constraints on rows
-        row_constraints = [
-            equal_to(sum_poly([q[n][i] for i in range(ncity)]), 1) for n in range(ncity)
-        ]
+        # row_constraints = c.row_constraint_unary(q, ncity)
 
-        # Constraints on columns
-        col_constraints = [
-            equal_to(sum_poly([q[n][i] for n in range(ncity)]), 1) for i in range(ncity)
-        ]
+        col_constraints = c.col_constraint_unary(q, ncity)
 
-        constraints = sum(row_constraints) + sum(col_constraints)
+        # constraints = sum(row_constraints) + sum(col_constraints)
+        constraints = sum(col_constraints)
 
         constraints *= np.amax(distances)  # Set the strength of the constraint
+
         model = cost + constraints
 
         # Set Ising Machine Client Settings
         client = FixstarsClient()
         client.token = "IcrKdmn7sqNjqZqjCIbRlzrFlhnrEQoW"
-        client.parameters.timeout = time_limit
+        client.parameters.timeout = time_limit  # Timeout is 5 seconds
 
         solver = Solver(client)
 
@@ -96,9 +84,8 @@ def run_binary(seed, ncity, time_limit):
 
         if len(result) == 0:
             return 0
-            raise RuntimeError("Any one of constraints is not satisfied.")
 
-        print("Mode: Binary")
+        print("Mode: Unary")
         print("Number of cities: " + str(ncity))
         print("Time limit: " + str(client.parameters.timeout))
 
@@ -106,9 +93,9 @@ def run_binary(seed, ncity, time_limit):
 
         q_values = decode_solution(q, values, 1)
 
-        route = np.where(np.array(q_values) == 1)[1]
-
         # print(q_values)
+
+        route = np.count_nonzero(q_values > 0, axis=1)  # Count number of 1's in each row.
 
         print("Route: " + str(route))
 
@@ -121,7 +108,7 @@ def run_binary(seed, ncity, time_limit):
 
         return round(sum(
             [distances[route[i]][route[(i + 1) % ncity]] for i in range(ncity)]
-            ), 4)
+        ), 4)
 
     except RuntimeWarning:
         print("I failed")

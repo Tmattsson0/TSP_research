@@ -1,0 +1,126 @@
+
+Ncity: 4, time limit: 1000
+Unary avg length: 1.7352
+Binary avg length: 1.7352
+Difference: 0
+[('u', 1, 4, 1)]
+Ncity: 8, time limit: 1000
+Unary avg length: 2.5062
+Binary avg length: 2.5062
+Difference: 0
+[]
+Ncity: 16, time limit: 1000
+Unary avg length: 3.5189
+Binary avg length: 3.4975
+Difference: 0.6124
+[]
+Ncity: 32, time limit: 1000
+Unary avg length: 6.1133
+Binary avg length: 4.7241
+Difference: 29.4053
+[]
+Ncity: 64, time limit: 1000
+Unary avg length: 15.6164
+Binary avg length: 7.0724
+Difference: 120.8076
+[('u', 1, 64, 1), ('u', 1, 64, 2), ('u', 1, 64, 3), ('u', 1, 64, 4), ('u', 1, 64, 5), ('u', 1, 64, 6), ('u', 1, 64, 7), ('u', 1, 64, 8), ('u', 1, 64, 9)]
+Ncity: 4, time limit: 2000
+Unary avg length: 1.716
+Binary avg length: 1.716
+Difference: 0
+[]
+Ncity: 8, time limit: 2000
+Unary avg length: 2.5062
+Binary avg length: 2.5062
+Difference: 0
+[]
+Ncity: 16, time limit: 2000
+Unary avg length: 3.4975
+Binary avg length: 3.4975
+Difference: 0
+[]
+Ncity: 32, time limit: 2000
+Unary avg length: 6.0086
+Binary avg length: 4.7084
+Difference: 27.6135
+[]
+Ncity: 64, time limit: 2000
+Unary avg length: 17.5227
+Binary avg length: 6.9677
+Difference: 151.4847
+[('u', 2, 64, 1), ('u', 2, 64, 3), ('u', 2, 64, 4), ('u', 2, 64, 5), ('u', 2, 64, 6), ('u', 2, 64, 7), ('u', 2, 64, 8), ('u', 2, 64, 9)]
+Ncity: 4, time limit: 3000
+Unary avg length: 1.716
+Binary avg length: 1.716
+Difference: 0
+[]
+Ncity: 8, time limit: 3000
+Unary avg length: 2.5062
+Binary avg length: 2.5062
+Difference: 0
+[]
+Ncity: 16, time limit: 3000
+Unary avg length: 3.4975
+Binary avg length: 3.4975
+Difference: 0
+[]
+Ncity: 32, time limit: 3000
+Unary avg length: 5.8051
+Binary avg length: 4.6907
+Difference: 23.7576
+[]
+Ncity: 64, time limit: 3000
+Unary avg length: 16.4672
+Binary avg length: 7.2329
+Difference: 127.6708
+[('u', 3, 64, 1), ('u', 3, 64, 3), ('u', 3, 64, 4), ('u', 3, 64, 5), ('u', 3, 64, 6), ('u', 3, 64, 7), ('u', 3, 64, 8), ('u', 3, 64, 9)]
+Ncity: 4, time limit: 4000
+Unary avg length: 1.716
+Binary avg length: 1.716
+Difference: 0
+[]
+Ncity: 8, time limit: 4000
+Unary avg length: 2.5062
+Binary avg length: 2.5062
+Difference: 0
+[]
+Ncity: 16, time limit: 4000
+Unary avg length: 3.4975
+Binary avg length: 3.4975
+Difference: 0
+[]
+Ncity: 32, time limit: 4000
+Unary avg length: 5.6071
+Binary avg length: 4.6907
+Difference: 19.5375
+[]
+Ncity: 64, time limit: 4000
+Unary avg length: 18.5666
+Binary avg length: 6.7854
+Difference: 173.6237
+[('u', 4, 64, 1), ('u', 4, 64, 3), ('u', 4, 64, 4), ('u', 4, 64, 5), ('u', 4, 64, 6), ('u', 4, 64, 7), ('u', 4, 64, 8), ('u', 4, 64, 9)]
+Ncity: 4, time limit: 5000
+Unary avg length: 1.716
+Binary avg length: 1.716
+Difference: 0
+[]
+Ncity: 8, time limit: 5000
+Unary avg length: 2.5062
+Binary avg length: 2.5062
+Difference: 0
+[]
+Ncity: 16, time limit: 5000
+Unary avg length: 3.4975
+Binary avg length: 3.4975
+Difference: 0
+[]
+Ncity: 32, time limit: 5000
+Unary avg length: 5.7184
+Binary avg length: 4.6907
+Difference: 21.9109
+[]
+Ncity: 64, time limit: 5000
+Unary avg length: 18.0724
+Binary avg length: 6.8643
+Difference: 163.2803
+[('u', 5, 64, 1), ('u', 5, 64, 3), ('u', 5, 64, 4), ('u', 5, 64, 5), ('u', 5, 64, 6), ('u', 5, 64, 7), ('u', 5, 64, 8), ('u', 5, 64, 9)]
