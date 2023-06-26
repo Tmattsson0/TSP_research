@@ -14,19 +14,6 @@ def gen_random_tsp(ncity: int):
 
     return locations, distances
 
-
-def gen_test_tsp(ncity: int):
-    np.random.seed(1)
-    # Coordinate
-    locations = np.random.uniform(size=(ncity, 2))
-
-    # Distance matrix
-    all_diffs = np.expand_dims(locations, axis=1) - np.expand_dims(locations, axis=0)
-    distances = np.sqrt(np.sum(all_diffs ** 2, axis=-1))
-
-    return locations, distances
-
-
 def route_to_unary_dict(route: list):
     unary = []
     q_values = []
@@ -74,16 +61,3 @@ def qdict_to_qvalues(qdict: dict, q):
             temp = temp + 1
 
     return q
-
-
-# test = "- 0.466811 q_0 q_2 + 0.465021 q_0 q_3 - 0.466811 q_0 q_4 + 0.465021 q_0 q_5 + 0.465021 q_1 q_2 - 0.916739 q_1 q_3 + 0.465021 q_1 q_4 - 0.916739 q_1 q_5 - 0.466811 q_2 q_4 + 0.465021 q_2 q_5 + 0.465021 q_3 q_4 - 0.916739 q_3 q_5 + 0.466811 q_0 - 0.0133025 q_1 + 0.466811 q_2 - 0.0133025 q_3 + 0.466811 q_4 - 0.0133025 q_5"
-#
-# _, dist = gen_test_tsp(3)
-# q = gen_symbols(BinaryPoly, 3, 3 - 1)  # Example for 32 cities. Binary change to unary
-#
-# test2 = cost.cost_func_unary(dist, q, 3)
-#
-#
-# qdict = route_to_unary_dict([1, 2, 3])
-#
-# qdict_to_qvalues(test2, qdict)

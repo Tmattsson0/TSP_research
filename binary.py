@@ -6,47 +6,7 @@ from amplify import BinaryPoly, gen_symbols, Solver, decode_solution, sum_poly
 from amplify.constraint import equal_to
 from amplify.client import FixstarsClient
 
-
-def gen_random_tsp(ncity: int):
-    # Coordinate
-    locations = np.random.uniform(size=(ncity, 2))
-
-    # Distance matrix
-    all_diffs = np.expand_dims(locations, axis=1) - np.expand_dims(locations, axis=0)
-    distances = np.sqrt(np.sum(all_diffs ** 2, axis=-1))
-
-    return locations, distances
-
-
-def show_plot(locations: np.ndarray):
-    plt.figure(figsize=(7, 7))
-    plt.xlabel("x")
-    plt.ylabel("y")
-    plt.scatter(*zip(*locations))
-    plt.show()
-
-
-def show_route(route: list, distances: np.ndarray, locations: np.ndarray):
-    ncity = len(route)
-    path_length = round(sum(
-        [distances[route[i]][route[(i + 1) % ncity]] for i in range(ncity)]
-    ), 4)
-
-    # x = [i[0] for i in locations]
-    # y = [i[1] for i in locations]
-    # plt.figure(figsize=(7, 7))
-    # plt.title(f"path length: {path_length}")
-    # plt.xlabel("x")
-    # plt.ylabel("y")
-    #
-    # for i in range(ncity):
-    #     r = route[i]
-    #     n = route[(i + 1) % ncity]
-    #     plt.plot([x[r], x[n]], [y[r], y[n]], "b-")
-    # plt.plot(x, y, "ro")
-    # plt.show()
-
-    return path_length
+from util import gen_random_tsp
 
 
 def run_binary(seed, ncity, time_limit):

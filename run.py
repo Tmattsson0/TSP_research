@@ -25,7 +25,7 @@ f = open("tests.txt", "w")
 
 for i in range(1, 6):
     for n in ns:
-        for seed in range(10): # change to 10
+        for seed in range(10):
             run_temp = unary.run_unary(seed, n, i * 1000)
             if run_temp != 0:
                 temp_u.append(run_temp)
