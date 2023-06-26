@@ -3,6 +3,7 @@ import cost as c
 from amplify import BinaryPoly, gen_symbols, Solver, decode_solution
 from amplify.client import FixstarsClient
 
+from client import get_fixstars_client
 from draw import show_route, show_plot
 from util import gen_random_tsp
 
@@ -30,10 +31,7 @@ def run_unary(seed, ncity, time_limit):
 
         model = cost + constraints
 
-        # Set Ising Machine Client Settings
-        client = FixstarsClient()
-        client.token = "IcrKdmn7sqNjqZqjCIbRlzrFlhnrEQoW"
-        client.parameters.timeout = time_limit  # Timeout is 5 seconds
+        client = get_fixstars_client(time_limit)
 
         solver = Solver(client)
 

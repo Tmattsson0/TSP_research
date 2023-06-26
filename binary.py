@@ -6,6 +6,7 @@ from amplify import BinaryPoly, gen_symbols, Solver, decode_solution, sum_poly
 from amplify.constraint import equal_to
 from amplify.client import FixstarsClient
 
+from client import get_fixstars_client
 from util import gen_random_tsp
 
 
@@ -44,11 +45,9 @@ def run_binary(seed, ncity, time_limit):
 
         constraints *= np.amax(distances)  # Set the strength of the constraint
         model = cost + constraints
-
-        # Set Ising Machine Client Settings
-        client = FixstarsClient()
-        client.token = "IcrKdmn7sqNjqZqjCIbRlzrFlhnrEQoW"
-        client.parameters.timeout = time_limit
+        
+        #Import 
+        client = get_fixstars_client(time_limit)
 
         solver = Solver(client)
 
