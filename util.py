@@ -8,6 +8,7 @@ def gen_random_tsp(ncity: int):
     # Coordinate
     locations = np.random.uniform(size=(ncity, 2))
 
+
     # Distance matrix
     all_diffs = np.expand_dims(locations, axis=1) - np.expand_dims(locations, axis=0)
     distances = np.sqrt(np.sum(all_diffs ** 2, axis=-1))

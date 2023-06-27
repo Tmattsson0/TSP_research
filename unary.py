@@ -65,6 +65,8 @@ def run_unary(seed, ncity, time_limit):
             [distances[route[i]][route[(i + 1) % ncity]] for i in range(ncity)]
         ), 4)
 
+    # Fixstars client throws RuntimeWarnings, this exception is to allow for the experiment to run after warnings are
+    # thrown.
     except RuntimeWarning:
         print("I failed")
         return 0
