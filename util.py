@@ -15,6 +15,17 @@ def gen_random_tsp(ncity: int):
 
     return locations, distances
 
+def gen_test_tsp(ncity: int):
+    np.random.seed(1)
+    # Coordinate
+    locations = np.random.uniform(size=(ncity, 2))
+
+    # Distance matrix
+    all_diffs = np.expand_dims(locations, axis=1) - np.expand_dims(locations, axis=0)
+    distances = np.sqrt(np.sum(all_diffs ** 2, axis=-1))
+
+    return locations, distances
+
 def route_to_unary_dict(route: list):
     unary = []
     q_values = []
