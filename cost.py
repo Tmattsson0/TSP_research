@@ -97,7 +97,7 @@ def cost_func_unary_v2(distances, q, ncity):
     # Row constraint as an additional cost. If a row is not allowed, it gets +100 cost.
     for i in range(ncity):
         for j in range(ncity - 2):
-            fn = BinaryPoly(-50 * (q[i][j] - 1) * q[i][j + 1]) #todo: Decrease to 10
+            fn = BinaryPoly(-100 * (q[i][j] - 1) * q[i][j + 1]) #todo: Decrease to 10
             new_costs.append(fn)
     also_cost = sum_poly(new_costs)
 
