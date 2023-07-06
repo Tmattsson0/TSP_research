@@ -3,18 +3,20 @@ import cost as c
 from amplify import BinaryPoly, gen_symbols, Solver, decode_solution
 from amplify.client import FixstarsClient
 
+import draw
 from client import get_fixstars_client
 from draw import show_route, show_plot
-from util import gen_random_tsp
+from util import gen_random_tsp, gen_solomon_tsp, nodes_to_legacy_locations
 
 
-def run_unary(seed, ncity, time_limit):
+def run_unary(seed, ncity, time_limit, test_file_path):
     try:
         np.random.seed(seed)
 
-        locations, distances = gen_random_tsp(ncity)
+        # nodes, distances = gen_random_tsp(ncity)
+        nodes, distances = gen_solomon_tsp(ncity, test_file_path)
 
-        # show_plot(locations)
+        # show_plot(nodes)
 
         q = gen_symbols(BinaryPoly, ncity, ncity - 1)
 
@@ -38,6 +40,7 @@ def run_unary(seed, ncity, time_limit):
         result = solver.solve(model)
 
         if len(result) == 0:
+            print("Any one of constraints is not satisfied.")
             return 0
 
         print("Mode: Unary")
@@ -54,7 +57,8 @@ def run_unary(seed, ncity, time_limit):
 
         print("Route: " + str(route))
 
-        # show_route(route, distances, locations)
+        # show_route(route, distances, nodes_to_legacy_locations(nodes))
+        draw.save_figure(route, distances, nodes_to_legacy_locations(nodes), test_file_path, ncity, time_limit, "unary")
 
         print("Path length: " + str(round(sum(
             [distances[route[i]][route[(i + 1) % ncity]] for i in range(ncity)]
@@ -68,5 +72,5 @@ def run_unary(seed, ncity, time_limit):
     # Fixstars client throws RuntimeWarnings, this exception is to allow for the experiment to run after warnings are
     # thrown.
     except RuntimeWarning:
-        print("I failed")
+        print("Failed because of RuntimeWarning")
         return 0

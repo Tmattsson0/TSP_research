@@ -6,17 +6,20 @@ from amplify import BinaryPoly, gen_symbols, Solver, decode_solution, sum_poly
 from amplify.constraint import equal_to
 from amplify.client import FixstarsClient
 
+import draw
 from client import get_fixstars_client
-from util import gen_random_tsp
+from draw import show_plot, show_route
+from util import gen_random_tsp, gen_solomon_tsp, nodes_to_legacy_locations
 
 
-def run_binary(seed, ncity, time_limit):
+def run_binary(seed, ncity, time_limit, test_file_path):
     try:
         np.random.seed(seed)
 
-        locations, distances = gen_random_tsp(ncity)
+        # locations, distances = gen_random_tsp(ncity)
+        nodes, distances = gen_solomon_tsp(ncity, test_file_path)
 
-        # show_plot(locations)
+        # show_plot(nodes)
 
         q = gen_symbols(BinaryPoly, ncity, ncity)
 
@@ -54,8 +57,8 @@ def run_binary(seed, ncity, time_limit):
         result = solver.solve(model)
 
         if len(result) == 0:
+            print("Any one of constraints is not satisfied.")
             return 0
-            raise RuntimeError("Any one of constraints is not satisfied.")
 
         print("Mode: Binary")
         print("Number of cities: " + str(ncity))
@@ -71,7 +74,8 @@ def run_binary(seed, ncity, time_limit):
 
         print("Route: " + str(route))
 
-        # show_route(route, distances, locations)
+        # show_route(route, distances, nodes_to_legacy_locations(nodes))
+        draw.save_figure(route, distances, nodes_to_legacy_locations(nodes), test_file_path, ncity, time_limit, "binary")
 
         print("Path length: " + str(round(sum(
             [distances[route[i]][route[(i + 1) % ncity]] for i in range(ncity)]

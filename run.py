@@ -1,60 +1,88 @@
-import time
+import os
+from os import path
 
 import binary
 import unary
 
+
 def get_change(current, previous):
     if current == previous:
         return 0
+    if current == 0 and previous != 0:
+        return float('inf')
+    if current != 0 and previous == 0:
+        return float('inf')
     try:
         return round((abs(current - previous) / previous) * 100.0, 4)
     except ZeroDivisionError:
         return float('inf')
 
+
 seed = 0
 ncity = 0
-ns = [4, 8, 16, 32, 64]
-# ns = [4, 8, 16]
+# ns = [4, 8, 16, 32, 64]
+ns = [5, 10, 25, 50]
 time_limit = 0
+temp_u = 0
+temp_b = 0
+run_u = None
+run_b = None
 
-temp_u = []
-temp_b = []
 failed_runs = []
+mypath = "/Users/thomasmattsson/Documents/GitHub/TSP_research/test_cases_small"
+paths = [os.path.join(dirpath, f) for (dirpath, dirnames, filenames) in os.walk(mypath) for f in filenames]
+paths.sort()
 
-f = open("tests.txt", "w")
+for p in paths:
+    filename = str(p.rsplit('/', 1)[1])
+    filename = filename.split('.')[0] + "_test.txt"
+    file_path = path.relpath("test_results/" + filename)
+    f = open(file_path, "w")
 
-for i in range(1, 6):
     for n in ns:
-        for seed in range(10):
-            run_temp = unary.run_unary(seed, n, i * 1000)
-            if run_temp != 0:
-                temp_u.append(run_temp)
-            elif run_temp == 0:
-                run = ("u", i, n, seed)
+        for i in range(1, 11):
+            temp_u = unary.run_unary(0, n, i * 1000, p)
+            if temp_u != 0:
+                run_u = temp_u
+            elif temp_u == 0:
+                run = ("u", i, n, 0)
                 failed_runs.append(run)
-                continue
-            # time.sleep(2)
 
-            run_temp = binary.run_binary(seed, n, i*1000)
-            if run_temp != 0:
-                temp_b.append(run_temp)
-            elif run_temp == 0:
-                run = ("b", i, n, seed)
+            temp_b = binary.run_binary(0, n, i * 1000, p)
+            if temp_b != 0:
+                run_b = temp_b
+            elif temp_b == 0:
+                run = ("b", i, n, 0)
                 failed_runs.append(run)
-                temp_u.pop()
-                continue
-            # time.sleep(2)
 
-        f.write("\n")
-        f.write("Ncity: " + str(n) + ", time limit: " + str(i*1000) + "\n")
-        if len(temp_u) == 0 or len(temp_b) == 0:
-            f.write("Unary avg length: " + str(0) + "\n")
-            f.write("Binary avg length: " + str(0) + "\n")
-        else:
-            f.write("Unary avg length: " + str(round(sum(temp_u) / len(temp_u), 4)) + "\n")
-            f.write("Binary avg length: " + str(round(sum(temp_b) / len(temp_b), 4)) + "\n")
-            f.write("Difference: " + str(get_change(sum(temp_u) / len(temp_u), sum(temp_b) / len(temp_b))) + "\n")
-        f.write(str(failed_runs))
-        failed_runs.clear()
-        temp_u.clear()
-        temp_b.clear()
+            f.write("Ncity: " + str(n) + ", time limit: " + str(i * 1000) + "\n")
+
+            if run_u is None and run_b is None:
+                f.write("Unary length: " + str(0) + "\n")
+                f.write("Binary length: " + str(0) + "\n")
+                f.write("Difference: " + str(get_change(0, 0)) + "\n")
+
+            elif run_u is None and run_b is not None:
+                f.write("Unary length: " + str(0) + "\n")
+                f.write("Binary length: " + str(run_b) + "\n")
+                f.write("Difference: " + str(get_change(0, run_b)) + "\n")
+
+            elif run_u is not None and run_b is None:
+                f.write("Unary length: " + str(run_u) + "\n")
+                f.write("Binary length: " + str(0) + "\n")
+                f.write("Difference: " + str(get_change(run_u, 0)) + "\n")
+
+            else:
+                f.write("Unary length: " + str(run_u) + "\n")
+                f.write("Binary length: " + str(run_b) + "\n")
+                f.write("Difference: " + str(get_change(run_u, run_b)) + "\n")
+
+            f.write("Failed runs:")
+            f.write(str(failed_runs))
+
+            f.write("\n")
+            f.write("\n")
+
+            failed_runs.clear()
+            run_u = 0
+            run_b = 0

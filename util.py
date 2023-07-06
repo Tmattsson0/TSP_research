@@ -1,19 +1,45 @@
+import pprint
+
 import numpy as np
 from amplify import sum_poly, gen_symbols, BinaryPoly
 
 import cost
+from file_reader import parse_test_case
+from node import Node
 
 
 def gen_random_tsp(ncity: int):
+    nodes = []
+
     # Coordinate
     locations = np.random.uniform(size=(ncity, 2))
-
+    print(locations)
 
     # Distance matrix
     all_diffs = np.expand_dims(locations, axis=1) - np.expand_dims(locations, axis=0)
     distances = np.sqrt(np.sum(all_diffs ** 2, axis=-1))
 
-    return locations, distances
+    for i in range(ncity):
+        n = Node(i + 1, tuple(locations[i]), ())
+        nodes.append(n)
+
+    return nodes, distances
+
+
+def gen_solomon_tsp(ncity: int, path: str):
+    nodes = parse_test_case(path)
+
+    if ncity <= len(nodes):
+        nodes = nodes[:ncity]
+
+    locations = nodes_to_legacy_locations(nodes)
+
+    # Distance matrix
+    all_diffs = np.expand_dims(locations, axis=1) - np.expand_dims(locations, axis=0)
+    distances = np.sqrt(np.sum(all_diffs ** 2, axis=-1))
+
+    return nodes, distances
+
 
 def gen_test_tsp(ncity: int):
     np.random.seed(1)
@@ -25,6 +51,7 @@ def gen_test_tsp(ncity: int):
     distances = np.sqrt(np.sum(all_diffs ** 2, axis=-1))
 
     return locations, distances
+
 
 def route_to_unary_dict(route: list):
     unary = []
@@ -64,7 +91,6 @@ def route_to_binary_dict(route: list):
 
 
 def qdict_to_qvalues(qdict: dict, q):
-
     temp = 0
     for i in range(len(q)):
         for j in range(len(q[0])):
@@ -73,3 +99,14 @@ def qdict_to_qvalues(qdict: dict, q):
             temp = temp + 1
 
     return q
+
+
+def nodes_to_legacy_locations(nodes):
+    temp = []
+
+    for n in nodes:
+        temp.append(list(n.coordinates))
+
+    locations = np.array(temp)
+
+    return locations
