@@ -13,7 +13,6 @@ def gen_random_tsp(ncity: int):
 
     # Coordinate
     locations = np.random.uniform(size=(ncity, 2))
-    print(locations)
 
     # Distance matrix
     all_diffs = np.expand_dims(locations, axis=1) - np.expand_dims(locations, axis=0)
@@ -110,3 +109,16 @@ def nodes_to_legacy_locations(nodes):
     locations = np.array(temp)
 
     return locations
+
+
+def get_change(current, previous):
+    if current == previous:
+        return 0
+    if current == 0 and previous != 0:
+        return float('inf')
+    if current != 0 and previous == 0:
+        return float('inf')
+    try:
+        return round((abs(current - previous) / previous) * 100.0, 4)
+    except ZeroDivisionError:
+        return float('inf')

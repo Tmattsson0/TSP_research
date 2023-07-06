@@ -13,8 +13,11 @@ def run_unary(seed, ncity, time_limit, test_file_path):
     try:
         np.random.seed(seed)
 
-        # nodes, distances = gen_random_tsp(ncity)
-        nodes, distances = gen_solomon_tsp(ncity, test_file_path)
+        if not test_file_path:
+            print("random")
+            nodes, distances = gen_random_tsp(ncity)
+        else:
+            nodes, distances = gen_solomon_tsp(ncity, test_file_path)
 
         # show_plot(nodes)
 
@@ -58,7 +61,7 @@ def run_unary(seed, ncity, time_limit, test_file_path):
         print("Route: " + str(route))
 
         # show_route(route, distances, nodes_to_legacy_locations(nodes))
-        draw.save_figure(route, distances, nodes_to_legacy_locations(nodes), test_file_path, ncity, time_limit, "unary")
+        draw.save_figure(route, distances, nodes_to_legacy_locations(nodes), test_file_path, time_limit, "unary")
 
         print("Path length: " + str(round(sum(
             [distances[route[i]][route[(i + 1) % ncity]] for i in range(ncity)]

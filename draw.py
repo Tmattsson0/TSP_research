@@ -37,8 +37,9 @@ def show_route(route: list, distances: np.ndarray, locations: np.ndarray):
     plt.plot(x, y, "ro")
     plt.show()
 
-def save_figure(route: list, distances: np.ndarray, locations: np.ndarray, test_file_path, ncity, time_limit, mode):
+def save_figure(route: list, distances: np.ndarray, locations: np.ndarray, test_file_path, time_limit, mode):
     ncity = len(route)
+
     path_length = round(sum(
         [distances[route[i]][route[(i + 1) % ncity]] for i in range(ncity)]), 4
     )
@@ -57,8 +58,13 @@ def save_figure(route: list, distances: np.ndarray, locations: np.ndarray, test_
     plt.plot(x, y, "ro")
 
     filename_suffix = "plot_ncity_" + str(ncity) + "_t_" + str(time_limit) + "_" + mode +".png"
-    filename = str(test_file_path.rsplit('/', 1)[1])
-    filename = filename.split('.')[0] + filename_suffix
+
+    if not test_file_path:
+        filename = "random_generated_" + filename_suffix
+    else:
+        filename = str(test_file_path.rsplit('/', 1)[1])
+        filename = filename.split('.')[0] + filename_suffix
+
     file_path = path.relpath("test_results/plots/" + filename)
 
     plt.savefig(file_path)

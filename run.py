@@ -3,20 +3,7 @@ from os import path
 
 import binary
 import unary
-
-
-def get_change(current, previous):
-    if current == previous:
-        return 0
-    if current == 0 and previous != 0:
-        return float('inf')
-    if current != 0 and previous == 0:
-        return float('inf')
-    try:
-        return round((abs(current - previous) / previous) * 100.0, 4)
-    except ZeroDivisionError:
-        return float('inf')
-
+from util import get_change
 
 seed = 0
 ncity = 0
@@ -27,8 +14,8 @@ temp_u = 0
 temp_b = 0
 run_u = None
 run_b = None
-
 failed_runs = []
+
 mypath = "/Users/thomasmattsson/Documents/GitHub/TSP_research/test_cases_small"
 paths = [os.path.join(dirpath, f) for (dirpath, dirnames, filenames) in os.walk(mypath) for f in filenames]
 paths.sort()

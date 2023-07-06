@@ -1,14 +1,9 @@
-import time
-
 import numpy as np
-import matplotlib.pyplot as plt
 from amplify import BinaryPoly, gen_symbols, Solver, decode_solution, sum_poly
 from amplify.constraint import equal_to
-from amplify.client import FixstarsClient
 
 import draw
 from client import get_fixstars_client
-from draw import show_plot, show_route
 from util import gen_random_tsp, gen_solomon_tsp, nodes_to_legacy_locations
 
 
@@ -16,8 +11,10 @@ def run_binary(seed, ncity, time_limit, test_file_path):
     try:
         np.random.seed(seed)
 
-        # locations, distances = gen_random_tsp(ncity)
-        nodes, distances = gen_solomon_tsp(ncity, test_file_path)
+        if not test_file_path:
+            nodes, distances = gen_random_tsp(ncity)
+        else:
+            nodes, distances = gen_solomon_tsp(ncity, test_file_path)
 
         # show_plot(nodes)
 
@@ -33,7 +30,6 @@ def run_binary(seed, ncity, time_limit, test_file_path):
             ),
         )
 
-        # print(cost)
         # Constraints on rows
         row_constraints = [
             equal_to(sum_poly([q[n][i] for i in range(ncity)]), 1) for n in range(ncity)
@@ -75,7 +71,7 @@ def run_binary(seed, ncity, time_limit, test_file_path):
         print("Route: " + str(route))
 
         # show_route(route, distances, nodes_to_legacy_locations(nodes))
-        draw.save_figure(route, distances, nodes_to_legacy_locations(nodes), test_file_path, ncity, time_limit, "binary")
+        draw.save_figure(route, distances, nodes_to_legacy_locations(nodes), test_file_path, time_limit, "binary")
 
         print("Path length: " + str(round(sum(
             [distances[route[i]][route[(i + 1) % ncity]] for i in range(ncity)]
@@ -89,5 +85,5 @@ def run_binary(seed, ncity, time_limit, test_file_path):
     # Fixstars client throws RuntimeWarnings, this exception is to allow for the experiment to run after warnings are
     # thrown.
     except RuntimeWarning:
-        print("I failed")
+        print("Failed because of RuntimeWarning")
         return 0
